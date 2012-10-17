@@ -1,0 +1,68 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>Trivia</title>
+		<style type="text/css">
+			.selected { color: red; }
+			#trivia-result {position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #FFF;}
+		</style>
+
+	</head>
+	<body>
+		<div id="trivia-app">
+	
+			<h1>Trivia</h1>
+			<div id="trivia-auth"></div>
+			<div id="trivia-question"></div>
+			<div id="trivia-answers"></div>
+			<div id="trivia-result" style="display:none"></div>
+		</div>
+
+
+
+		<script src="http://yui.yahooapis.com/3.7.2/build/yui/yui-min.js"></script>
+		<script src="/js/auth.js"></script>
+		<script src="/js/trivia-app.js"></script>
+		<script src="socket.io/lib/socket.io.js"></script>
+		<script>
+
+		YUI({filter: 'raw'}).use('trivia-app', 'auth', function (Y) {
+
+			new Y.authApp(function (team) {
+				new Y.TriviaApp({team: team})
+			});
+		   
+		});
+
+		
+
+		  // socket = io.connect('ws://192.168.1.68:8080');
+
+		  // socket.on('question',function (data) {
+		  // 		  //   socket.emit('my other event', { my: 'data' });
+		  // });
+</script>
+
+
+<script type="text/x-template" id="trivia-auth-template">
+
+    <form class="authenticate" onsubmit="return false">
+    	<label>Enter a Team Name</label>
+    	<input type="text" name="{key}" />
+    	<input type="submit" />
+    </form>
+
+</script>
+
+<script type="text/x-template" id="trivia-question-template">
+    <h4>{text}</h4>
+</script>
+
+<script type="text/x-template" id="trivia-answer-template">
+    <div class="trivia-answer">{text}</div>
+</script>
+
+
+
+	</body>
+</html>

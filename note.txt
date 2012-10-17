@@ -1,0 +1,8 @@
+admin password
+admin show 
+	-> send results 
+	-> send hold to clients with answer so client can show
+persist teams in DB
+persist client answers in LS
+
+fix refresh issue - add logic on server to tell question state. send loading if no active question

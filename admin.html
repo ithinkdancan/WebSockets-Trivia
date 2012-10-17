@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<title>Admin</title>
+		<style type="text/css">
+			.correct { color: green; }
+			.incorrect { color: red;}
+		</style>
+
+	</head>
+	<body>
+		<div id="test">
+			
+			<div id="trivia-question"></div>
+			<div id="trivia-answers"></div>
+			<div id="trivia-response"></div>
+			<button id="prev" type="button">Previous</button>
+			<button id="show" type="button">Show Results</button>
+			<button id="next" type="button">Next</button>
+
+		</div>
+
+
+
+		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+		<script src="/socket.io/lib/socket.io.js"></script>
+		<script>
+
+			var socket = io.connect('ws://' + window.location.host);
+
+			var renderQuestion = function(data){
+				console.log(data)
+				var answer;
+		  		
+		  		$('#trivia-question').html(data.text);
+		  		$('#trivia-answers').html('');
+
+		  		for (var i = 0; i < data.answers.length; i++) {
+		  			answer = $('<div>' + data.answers[i].text + '</div>');
+		  			if(data.correctAnswer >= 0 && data.correctAnswer == i){
+		  				answer.addClass('correct')
+		  			} else if(data.correctAnswer >= 0) {
+		  				answer.addClass('incorrect')
+		  			}
+		  			var appended = $('#trivia-answers').append(answer);
+		  			
+
+		  		};
+			}
+
+			$('#next').on('click',function(){
+				socket.emit('admin', { action: 'next', key: 'qwerty' });
+			})
+
+			$('#show').on('click',function () {
+				socket.emit('admin', { action: 'show', key: 'qwerty' });
+			})
+
+			$('#show').on('click',function () {
+				socket.emit('admin', { action: 'end', key: 'qwerty' });
+			})
+
+			socket.on('results',renderQuestion);
+
+			 socket.on('question',renderQuestion);
+
+			 socket.on('numresponses',function (data){
+			 	$('#trivia-response').html('Responses: ' + data.responses + ' of ' + data.teams + ' Teams')
+			 })
+</script>
+	</body>
+</html>
