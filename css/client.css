@@ -1,0 +1,106 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: sans-serif;
+	background: transparent url(/css/bg.jpg) center center;
+	-webkit-font-smoothing: antialiased;
+	color: #FFF;
+}
+
+header {
+	text-align: left;
+	background: #13A89E;
+	color: #FFF;
+	text-shadow: 0 -1px rgba(0,0,0,.5);
+}
+
+
+header h1 {
+	height: 35px;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 35px;
+	padding-left: 15px; 
+	background: #000;
+	background: rgba(0,0,0,.5);
+}
+
+.hidden {
+	display:none;
+}
+
+.trivia-question {
+	padding: 15px;
+	margin-bottom: 20px;
+	background: #13A89E;
+/*	box-shadow: 0 -2px 3px rgba(0,0,0,.2),
+				 0 2px 3px rgba(0,0,0,.2);*/
+	text-shadow: 0 1px rgba(0,0,0,.5);
+	font-weight: normal;
+	position: relative;
+	z-index: 2;
+
+}
+
+.trivia-answer {
+	position: relative;
+	z-index: 1;
+	padding: 15px 15px 15px 35px;
+	margin: 10px;
+	background: rgba(255,255,255,.15);
+	box-shadow: inset 1px 1px 1px rgba(255,255,255,.1),
+				inset -1px -1px 1px rgba(0,0,0,.1);
+	border-radius: 7px;
+	-webkit-transform: translate3d(0,0,0);
+	-webkit-transition: -webkit-transform .1s linear;
+}
+
+.trivia-answer.loading {
+	-webkit-transform: translate3d(100%,0,0);
+}
+
+.trivia-answer:after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width:  20px;
+	height: 100%;
+	border-radius: 7px 0 0 7px;
+	content: '';
+	background: rgba(0,0,0,.1);
+	box-shadow: 0 0 0 1px rgba(255,255,255,.05);
+	border-right:1px solid  rgba(0,0,0,.1);
+}
+
+@-webkit-keyframes wiggle {
+	0%   {-webkit-transform: translate3d(0,0,0);}
+	25%   {-webkit-transform: translate3d(-3px,0,0);}
+	50%  {-webkit-transform: translate3d(3px,0,0);}
+	100% {-webkit-transform: translate3d(0,0,0);}
+}
+
+.trivia-answer.selected {
+	xbackground: rgba(255,255,255,.1);
+	-webkit-animation: wiggle .3s ease-in-out;
+}
+
+.trivia-answer.selected:after {
+	background: rgba(0,153,51,.6);
+	box-shadow: inset 0 1px 1px rgba(255,255,255,.1),
+	0 0 0 1px rgba(255,255,255,.05);
+}
+
+#trivia-result {
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 100%; 
+	background: rgba(0,0,0,.9); 
+	text-align: center;
+	z-index: 3;
+}
+

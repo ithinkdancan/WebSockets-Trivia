@@ -1,34 +1,25 @@
-YUI.add('trivia-app', function (Y) {
-  
-  console.log(Y.Base)
+var Trivia = Trivia || {};
 
-  Y.TriviaModel = Y.Base.create('triviaModel', Y.Model, [], {
 
-	initializer : function () {
+Trivia.QuestionModel = Backbone.Model.extend({
 
-		var that = this;
-
-		this.get('socket').on('question',function (data) {
-			that.set('question', data);
-			that.set('answer', null);
-		});
+	defaults: {
+		socket: false,
+		answers: [],
+		question: false,
+		team: null
 	},
 
-	// This tells the Model to use a localStorage sync provider (which we'll
-	// create below) to save and load information about a todo item.
-	sync: function () {
-		console.log('sync')
+	initialize: function (config) {
+		this.get('socket').on('question', $.proxy(this.updateQuestion, this))
 	},
 
-	// This method will toggle the `done` attribute from `true` to `false`, or
-	// vice versa.
 	setAnswer: function (question, answer) {
 
-		//set the answer
 		var answers = this.get('answers')
 			answers[question] = answer;
 
-		this.set('answers',answers);
+		this.set('answers', answers);
 
 		//send the server the answer
 		socket.emit('client', { 
@@ -38,39 +29,130 @@ YUI.add('trivia-app', function (Y) {
 			answer: answer
 		});
 
-		//save the answer
-		this.save();
+	},
 
+	updateQuestion : function (data){
+
+		this.set('question', data);
 	}
-}, {
-	ATTRS: {
 
-		socket: { value: '' },
-
-		// Indicates whether or not this todo item has been completed.
-		answers: {value: []},
-
-		// Contains the text of the todo item.
-		question: { value : ''},
-
-	}
 });
 
 
 
 
+Trivia.App = Backbone.View.extend({
 
-  Y.TriviaApp = Y.Base.create('triviaApp', Y.View, [], {
+	clickEvent: !!('ontouchstart' in window) ? 'touchstart' : 'click',
 
-  	context:  new webkitAudioContext(),
+	context:  window.webkitAudioContext ? new webkitAudioContext() : false,
 
+	initialize: function(config) { 
+		
+		this.socket = socket = io.connect('ws://' + window.location.host);
+		this.model = new Trivia.QuestionModel({
+			socket: this.socket, 
+			team: config.team
+		});
+
+		this.questionTemplate = Handlebars.compile($('#trivia-question-template').html());
+		this.answerTemplate = Handlebars.compile($('#trivia-answer-template').html());
+
+		//subscribe to model changes
+		this.model.on('change:question', this.hideResult, this);
+		this.model.on('change:question', this.render, this);
+
+		//subscribe to socket events
+		socket.on('results', $.proxy(this.renderResult, this));
+
+		this.setElement($('#trivia-app'));
+
+		//load audio files
+		this.loadAudioFile('sounds/Buzzer2.mp3','failSound');
+		this.loadAudioFile('sounds/Cheering.mp3','successSound');
+
+		//register the team with the server
+		this.registerTeam(config.team);
+
+	},
+
+	render: function (data) {
+		
+		var question = this.model.get('question');
+		var answers = question.answers;
+		var answerText;
+
+		var questionText = this.questionTemplate(question);
+		this.$el.html(questionText)
+
+		for (var i = 0; i < answers.length; i++) {
+			
+			answerText = $(this.answerTemplate(answers[i]));
+
+			answerText.on(this.clickEvent, $.proxy(this.selectAnswer, this, {question: question.id, answer: i}))
+
+			this.$el.append(answerText)
+
+			setTimeout($.proxy(function(){
+					this.removeClass('loading')
+			},answerText) , 100 + (100*i))
+
+		}
+
+		//$('.loading').removeClass('loading')
+
+	},
+
+	hideResult : function () {
+
+	  $('#trivia-result').addClass('hidden');
+
+	},
+
+	showResult : function () {
+
+	  $('#trivia-result').removeClass('hidden');
+
+	},
+
+	renderResult: function (data) {
+
+		var userAnswer = this.model.get('answers')[data.id];
+
+		if(userAnswer !== data.correctAnswer || userAnswer == undefined){
+			$('#trivia-result').html('WRONG!');
+			this.playSound(this.failSound);
+		} else {
+			$('#trivia-result').html('CORRECT!');
+			this.playSound(this.successSound);
+		}
+
+	  this.showResult();
+
+	},
+
+	selectAnswer : function (data, event) {
+
+		var targ = $(event.target);
+
+		targ.siblings('.selected').removeClass('selected');
+		targ.addClass('selected');
+
+		this.model.setAnswer(data.question,data.answer)
+
+	},
+
+	registerTeam: function (team){
+
+		socket = this.socket;
+		socket.emit('client', { action: 'register', team: team });
+
+	},
+	
 	playSound: function (buffer) {
 
-		context = this.context;
-
 		if(buffer){
-			
-			console.log('we have a buffer')
+			context = this.context;
 
 		    var source = context.createBufferSource();
 
@@ -84,149 +166,29 @@ YUI.add('trivia-app', function (Y) {
 	},
 
 	loadAudioFile: function (url, bufferStr) {
-			
-			var that = this;
-			var context = this.context;
-			var request = new XMLHttpRequest();
 
-			request.open('get', url, true);
-			request.responseType = 'arraybuffer';
+		if(!this.context){
+			return;
+		}
+		
+		var that = this;
+		var context = this.context;
+		var request = new XMLHttpRequest();
 
-			request.onload = function () {
-				context.decodeAudioData(
-					request.response,
-					function(incomingBuffer) {
-						that.set(bufferStr,incomingBuffer); // Not declared yet
-					}
-				)
-			};
+		request.open('get', url, true);
+		request.responseType = 'arraybuffer';
+
+		request.onload = function () {
+			context.decodeAudioData(
+				request.response,
+				function(incomingBuffer) {
+					that[bufferStr] = incomingBuffer; // Not declared yet
+				}
+			)
+		};
 
 		request.send();
 		
-	},
-
-	selectAnswer : function (event, data) {
-
-		var model = this.get('model');
-
-		event.currentTarget.ancestor().all('.selected').removeClass('selected');
-		event.currentTarget.addClass('selected');
-
-		model.setAnswer(data.question,data.answer)
-
-	},
-
-	initializer : function (config) {
-
-		var that = this;
-		var socket = io.connect('ws://' + window.location.host);
-		var model = new Y.TriviaModel({socket: socket, team: config.team  });
-
-		var failSound;
-		this.loadAudioFile('sounds/Buzzer2.mp3','failSound');
-
-		var successSound;
-		this.loadAudioFile('sounds/Cheering.mp3','successSound');
-
-		model.after('questionChange', this.render, this)
-		model.after('questionChange', this.hideResult, this)
-
-		socket.on('results', function(data){ that.renderResult.call(that,data)});
-
-		this.set('model', model);
-		this.set('socket', socket);
-		this.set('failSound', failSound);
-		this.set('successSound', failSound);
-
-		this.registerTeam(config.team);
-
-	},
-
-	registerTeam: function (team){
-
-		socket = this.get('socket');
-		socket.emit('client', { action: 'register', team: team });
-
-	},
-
-	hideResult : function () {
-	  Y.one('#trivia-result').hide()
-	},
-
-	showResult : function () {
-	  console.log('showResult!', this)
-	  Y.one('#trivia-result').show();
-	 
-
-	},
-
-	renderResult : function(data) {
-	  console.log(this)
-	  var model = this.get('model')
-	  var userAnswer = model.get('answers')[data.id];
-
-	  if(userAnswer !== data.correctAnswer || userAnswer == undefined){
-		Y.one('#trivia-result').setHTML('WRONG!');
-		 this.playSound(this.get('failSound'));
-	  } else {
-		Y.one('#trivia-result').setHTML('CORRECT!');
-		 this.playSound(this.get('successSound'));
-	  }
-
-	  this.showResult();
-
-	},
-
-	render : function () {
-
-		console.log('rendering')
-
-		var containerNode = this.get('container');
-
-		var answerHTML,
-			answerSub,
-			answerNode;
-
-		var question = this.get('model').get('question');
-		var questionText = question.text;
-		var answers = question.answers;
-		var previousAnswer = this.get('model').get('answers')[question.id];
-
-		var questionContainer = Y.one('#trivia-question');
-		var answerContainer = Y.one('#trivia-answers');
-
-		questionContainer.setHTML(questionText);
-		answerContainer.setHTML('');
-
-		for (var i = 0; i < answers.length; i++) {
-			
-			answerHTML = Y.one('#trivia-answer-template').getHTML();
-			
-			answerSub = Y.Lang.sub(answerHTML,answers[i]);
-			
-			answerNode = Y.Node.create(answerSub);
-
-			answerNode.on('click',this.selectAnswer,this,{question: question.id, answer: i})
-
-			if(i == previousAnswer){
-				answerNode.addClass('selected');
-			}
-
-			answerContainer.appendChild(answerNode)
-			
-		}
-
-		return this;
 	}
 
-  },{
-		ATTRS: {
-			container: {
-				valueFn: function () {
-					return Y.one('#trivia-app');
-				}
-			}
-		}
-	});
-	
-}, 1.0, {requires: ['base', 'node', 'event', 'json', 'model', 'model-list', 'view']});
+});

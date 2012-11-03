@@ -4,25 +4,31 @@ var
 	server = require('http').createServer(app),
 	io = require('socket.io').listen(server);
 
-var currentQuestion = 0;
+io.set('log level', 1)
+
+var currentQuestion = false;
+
+var questionActive = false;
 
 var teams = {};
 
 var questions = [
 	{
-		'text' : 'Which CSS Selector has the highest specificity',
+		'text' : 'Which CSS Selector has the highest specificity?',
 		'answers' : [
 			{ text: '#section .title'},
 			{ text: '#section *'},
-			{ text: '.section'}
+			{ text: '.section'},
+			{ text: 'section'}
 		],
 		correct : 0
 	},{
-		'text' : 'Which of the following would make x global',
+		'text' : 'Which of the following would make x global?',
 		'answers' : [
 			{ text: 'function () { var x = 5; }'},
 			{ text: 'function () { x = 5; }'},
-			{ text: 'function () { this.x = 5; }'}
+			{ text: 'function () { this.x = 5; }'},
+			{ text: 'function () { window.x = 5; }'}
 		],
 		correct : 1 
 	}
@@ -49,15 +55,16 @@ registerClient = function (data){
 		console.log('registering a client: ' + data.team)
 		teams[data.team] = {
 			name: data.team,
-			answers: []
+			answers: [],
+			correctAnswers : 0
 		}
 	} else {
 		console.log('team exists: ' + data.team)
 	}
 
-	broadcastQuestion(currentQuestion,this);
+	broadcastQuestion(currentQuestion,this);	
 	broadcastTeams();
-	broadcastNumResponses();
+
 }
 
 logAnswer = function (data) {
@@ -65,19 +72,147 @@ logAnswer = function (data) {
 	 if(data.team && !teams[data.team]){
 		registerClient.call(this, data)
 	 }
-	console.log(teams)
-	console.log(data)
+
+	console.log('got an answer');	
 
 	if(teams[data.team] && data.question == currentQuestion){
 		teams[data.team].answers[data.question] = data.answer;
 		broadcastNumResponses();
 	} else {
 		console.log('team not found' + data.team);
-		console.log(teams)
 	}
 
 	
 };
+
+
+
+//sends out the next question
+nextQuestion = function () {
+	
+	var nextQuestion = currentQuestion;
+
+	if(nextQuestion === false ) {
+		nextQuestion = 0;
+	} else {
+		nextQuestion++;
+	}
+	
+    if(questions[nextQuestion]){
+    	currentQuestion = nextQuestion;
+    	questionActive = true;
+    	broadcastQuestion(currentQuestion);
+    	broadcastTeams();
+    } else {
+    	broadcastGameOver();
+    }
+
+   
+
+}
+
+broadcastGameOver = function () {
+
+	io.sockets.emit('gameOver', {});
+	broadcastTeams();
+
+}
+
+//sends out the question, options, correct answer, and team selections
+broadcastQuestionResults = function () {
+
+	questionActive = false;
+
+	if(questions[currentQuestion]){
+
+		var question = questions[currentQuestion];
+
+		var data = {
+			id:currentQuestion,
+			text : question.text,
+			answers: question.answers,
+			correctAnswer: question.correct,
+			results: []
+		}
+
+		io.sockets.emit('results', data);
+	}
+
+
+}
+
+broadcastNumResponses = function () {
+
+	var numResponses = 0;
+	var numTeams = 0;
+
+	for(o in teams){
+		numTeams++;
+		if(teams[o].answers[currentQuestion] >= 0){
+			numResponses++;
+		}
+	}
+
+	io.sockets.emit('numresponses', {
+		responses : numResponses,
+		teams: numTeams
+	});
+}
+
+broadcastTeams = function (socket){
+
+	console.log(teams);
+
+	for (var i in teams) {
+		teams[i].correctAnswers = 0;
+		for (var j = 0; j <= currentQuestion; j++) {
+			if(teams[i].answers[j] == questions[j].correct){
+				teams[i].correctAnswers++;
+			}
+		}
+	}
+
+	if(Object.keys( teams ).length){
+		if(socket){
+			socket.emit('teamList', teams);
+		} else {
+			io.sockets.emit('teamList', teams)
+		}
+	}
+	
+
+	
+
+}
+
+//Send a question to all clients or a single socket
+broadcastQuestion = function (id, socket){
+	
+	if(questionActive){
+		var question = questions[currentQuestion];
+
+		var data = {
+			id: currentQuestion,
+			text : question.text,
+			answers: question.answers,
+			results: []
+		}
+
+		console.log('sending Question', data)
+		
+		if(socket){
+			socket.emit('question', data);
+		} else {
+			io.sockets.emit('question', data);
+		}
+
+		broadcastNumResponses();
+
+	}
+	
+	
+}
+
 
 //Handle Client Actions
 handleClient = function (data) {
@@ -105,74 +240,15 @@ handleAdmin = function(data) {
 		case 'end':
 			broadcastQuestionResults.call(this, data);
 			break;
+		case 'reset':
+			currentQuestion = false;
+			questionActive = false;
+			break;
 		default: 
 			console.log('Unknown Admin Action')
 			console.log(data)
 	}
 
-}
-
-//sends out the next question
-nextQuestion = function () {
-	currentQuestion++;
-    if(currentQuestion >= questions.length){ 
-    	currentQuestion = 0; 
-    }
-
-    broadcastQuestion(currentQuestion);
-    broadcastNumResponses();
-}
-
-//sends out the question, options, correct answer, and team selections
-broadcastQuestionResults = function () {
-
-	var question = questions[currentQuestion];
-
-	var data = {
-		id:currentQuestion,
-		text : question.text,
-		answers: question.answers,
-		correctAnswer: question.correct,
-		results: []
-	}
-
-	io.sockets.emit('results', data);
-
-
-}
-
-broadcastNumResponses = function () {
-
-	var numResponses = 0;
-	var numTeams = 0;
-
-	for(o in teams){
-		numTeams++;
-		if(teams[o].answers[currentQuestion] >= 0){
-			numResponses++;
-		}
-	}
-
-	io.sockets.emit('numresponses', {
-		responses : numResponses,
-		teams: numTeams
-	});
-}
-
-broadcastTeams = function (){
-
-}
-
-//Send a question to all clients or a single socket
-broadcastQuestion = function (id, socket){
-	var question = questions[currentQuestion];
-	question.id = currentQuestion;
-	if(socket){
-		socket.emit('question', question);
-	} else {
-		io.sockets.emit('question', question);
-	}
-	
 }
 
 
@@ -182,5 +258,6 @@ io.sockets.on('connection', function (socket) {
   socket.on('admin', handleAdmin);	
 
   broadcastQuestion(currentQuestion, socket);
+  broadcastTeams(socket)
 
 });

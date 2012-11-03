@@ -1,6 +1,7 @@
-YUI.add('auth', function (Y) {
-  
-	Y.authApp = function (callback) {
+	
+	var Trivia = Trivia || {};
+	
+	Trivia.Auth = function (callback) {
 
 		this.authCallback = callback;
 
@@ -8,9 +9,9 @@ YUI.add('auth', function (Y) {
 
 	}
 
-	Y.authApp.prototype = {
+	Trivia.Auth.prototype = {
 
-		key : 'team1',
+		key : 'TeamName',
 
 		init : function () {
 
@@ -28,17 +29,21 @@ YUI.add('auth', function (Y) {
 
 			localStorage.setItem(this.key,team);
 			this.authCallback(team);
-			Y.one('#trivia-auth').setHTML('')
+			$('#trivia-app').html('');
 
 		},
 
 		submitTeam : function (event) {
 
-			var form = event.currentTarget;
-			var team = Y.Lang.trim(form.get(this.key).get('value'));
+			//get the form
+			var form = $(event.target);
 
-			if(team){
-				this.save(team);
+			//get the teamname
+			var teamName = $.trim(form.find('[name="'+this.key+'"]').val());
+
+			//save teamname
+			if(teamName){
+				this.save(teamName);
 			} else {
 				//throw error
 			}
@@ -47,18 +52,16 @@ YUI.add('auth', function (Y) {
 
 		getTeam : function () {
 
-			var templateHtml = Y.one('#trivia-auth-template').getHTML();
-			
-			var template = Y.Lang.sub(templateHtml,{key: this.key});
-			
-			var authForm = Y.Node.create(template);
-				authForm.on('submit', this.submitTeam, this)
-			
-			var container = Y.one('#trivia-auth');
+			//build form from template
+			var templateHtml = Handlebars.compile($('#trivia-auth-template').html());
+			var authForm = $(templateHtml({key: this.key}));
 
-			container.setHTML(authForm);
+			//Attach submit listener
+			authForm.bind('submit', $.proxy(this.submitTeam, this));
+			
+			//append to body
+			$('#trivia-app').html(authForm);
 
 		}
 
 	}
-});
