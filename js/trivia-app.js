@@ -1,47 +1,8 @@
 var Trivia = Trivia || {};
 
-
-Trivia.QuestionModel = Backbone.Model.extend({
-
-	defaults: {
-		socket: false,
-		answers: [],
-		question: false,
-		team: null
-	},
-
-	initialize: function (config) {
-		this.get('socket').on('question', $.proxy(this.updateQuestion, this))
-	},
-
-	setAnswer: function (question, answer) {
-
-		var answers = this.get('answers')
-			answers[question] = answer;
-
-		this.set('answers', answers);
-
-		//send the server the answer
-		socket.emit('client', { 
-			action: 'answer', 
-			team: this.get('team'),
-			question: question,
-			answer: answer
-		});
-
-	},
-
-	updateQuestion : function (data){
-
-		this.set('question', data);
-	}
-
-});
-
-
-
-
 Trivia.App = Backbone.View.extend({
+
+	application: 'client',
 
 	clickEvent: !!('ontouchstart' in window) ? 'touchstart' : 'click',
 
@@ -58,21 +19,27 @@ Trivia.App = Backbone.View.extend({
 		this.questionTemplate = Handlebars.compile($('#trivia-question-template').html());
 		this.answerTemplate = Handlebars.compile($('#trivia-answer-template').html());
 
-		//subscribe to model changes
-		this.model.on('change:question', this.hideResult, this);
-		this.model.on('change:question', this.render, this);
-
-		//subscribe to socket events
-		socket.on('results', $.proxy(this.renderResult, this));
-
 		this.setElement($('#trivia-app'));
+
+		//event listeners
+		this.attachListeners();
+
+		//register the team with the server
+		this.register(config.team);
 
 		//load audio files
 		this.loadAudioFile('sounds/Buzzer2.mp3','failSound');
 		this.loadAudioFile('sounds/Cheering.mp3','successSound');
+	},
 
-		//register the team with the server
-		this.registerTeam(config.team);
+	attachListeners: function () {
+
+		//subscribe to socket events
+		this.socket.on('results', $.proxy(this.renderResult, this));
+
+		//subscribe to model changes
+		this.model.on('change:question', this.hideResult, this);
+		this.model.on('change:question', this.render, this);
 
 	},
 
@@ -142,10 +109,10 @@ Trivia.App = Backbone.View.extend({
 
 	},
 
-	registerTeam: function (team){
+	register: function (team){
 
 		socket = this.socket;
-		socket.emit('client', { action: 'register', team: team });
+		socket.emit(this.application, { action: 'register', team: team });
 
 	},
 	

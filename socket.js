@@ -31,6 +31,24 @@ var questions = [
 			{ text: 'function () { window.x = 5; }'}
 		],
 		correct : 1 
+	},{
+		'text' : 'Which CSS Selector has the highest specificity?',
+		'answers' : [
+			{ text: '#section .title'},
+			{ text: '#section *'},
+			{ text: '.section'},
+			{ text: 'section'}
+		],
+		correct : 0
+	},{
+		'text' : 'Which of the following would make x global?',
+		'answers' : [
+			{ text: 'function () { var x = 5; }'},
+			{ text: 'function () { x = 5; }'},
+			{ text: 'function () { this.x = 5; }'},
+			{ text: 'function () { window.x = 5; }'}
+		],
+		correct : 1 
 	}
 ]
 
@@ -47,12 +65,18 @@ app.get('/admin', function (req, res) {
   res.sendfile(__dirname + '/admin.html');
 });
 
+app.get('/admin2', function (req, res) {
+  res.sendfile(__dirname + '/admin2.html');
+});
+
 
 //Create a new team
 registerClient = function (data){
 
 	if(!teams[data.team]){
+
 		console.log('registering a client: ' + data.team)
+		console.log(data)
 		teams[data.team] = {
 			name: data.team,
 			answers: [],
@@ -63,7 +87,7 @@ registerClient = function (data){
 	}
 
 	broadcastQuestion(currentQuestion,this);	
-	broadcastTeams();
+	broadcastTeam(teams[data.team]);
 
 }
 
@@ -143,6 +167,7 @@ broadcastQuestionResults = function () {
 
 broadcastNumResponses = function () {
 
+	var respondedTeams = [];
 	var numResponses = 0;
 	var numTeams = 0;
 
@@ -150,12 +175,14 @@ broadcastNumResponses = function () {
 		numTeams++;
 		if(teams[o].answers[currentQuestion] >= 0){
 			numResponses++;
+			respondedTeams.push(teams[o].name)
 		}
 	}
 
 	io.sockets.emit('numresponses', {
 		responses : numResponses,
-		teams: numTeams
+		teams: numTeams,
+		respondedTeams: respondedTeams
 	});
 }
 
@@ -180,10 +207,26 @@ broadcastTeams = function (socket){
 		}
 	}
 	
-
-	
-
 }
+
+broadcastTeam = function (team, socket){
+	console.log('broadcastTeam')
+		team.correctAnswers = 0;
+		for (var j = 0; j <= currentQuestion; j++) {
+			if(team.answers[j] == questions[j].correct){
+				team.correctAnswers++;
+			}
+		}
+
+		if(socket){
+			socket.emit('newClient', team);
+		} else {
+			io.sockets.emit('newClient', team)
+		}
+	
+}
+
+//
 
 //Send a question to all clients or a single socket
 broadcastQuestion = function (id, socket){

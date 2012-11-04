@@ -1,7 +1,9 @@
 	
 	var Trivia = Trivia || {};
 	
-	Trivia.Auth = function (callback) {
+	Trivia.Auth = function (key, callback) {
+
+		this.key = key || this.key;
 
 		this.authCallback = callback;
 
