@@ -2,12 +2,8 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<title>Trivia</title>
+		<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="/css/client.css">
-		<style type="text/css">
-			body { font-size: 16px; }
-			
-		</style>
-
 	</head>
 	<body>
 
@@ -38,10 +34,10 @@
 		<script type="text/x-template" id="trivia-auth-template">
 
 		    <form class="authenticate" onsubmit="return false">
-		    	<div class="trivia-question">
+		    	<div class="trivia-question trivia-login">
 			    	<label>Enter a Team Name</label>
-			    	<input type="text" name="{{key}}" />
-			    	<input type="submit" />
+			    	<div><input type="text" name="{{key}}" /></div>
+			    	<input type="submit" value="Submit" />
 		    	</div>
 		    </form>
 
@@ -57,7 +53,7 @@
 
 		<!-- App Kickoff -->
 		<script>
-			new Trivia.Auth('team', function (team) {
+			new Trivia.Auth('teamName', function (team) {
 				new Trivia.App({team: team});
 			});
 		</script>

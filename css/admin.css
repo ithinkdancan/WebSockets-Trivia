@@ -8,8 +8,14 @@
 	z-index: 2;
 }
 
+.trivia-question {
+	font-size: 32px;
+}
+
 .trivia-answer {
 	padding: 15px;
+	margin: 15px;
+	font-size: 30px;
 }
 
 .trivia-answer:after {
@@ -30,6 +36,8 @@
 	height: 100%;
 	background: rgba(255,255,255,.1);
 	z-index: 1;
+	overflow: hidden;
+	position: relative;
 	
 }
 
@@ -39,13 +47,22 @@
 }
 
 .leaderboard .trivia-team {
-	background: #666;
+	background: rgba(0,0,0,.3);
+	border-bottom: 1px solid rgba(0,0,0,1);
+	border-top: 1px solid rgba(255,255,255,.1);
 	padding: 10px;
-	-webkit-animation: flipin 1s ease-in-out;
-	-webkit-transform-origin: 0 0 0;
+	position: absolute;
+	width: 100%;
+	font-size: 20px;
+	-webkit-animation: flipin .8s ease-in-out;
+	-webkit-transform-origin: 50% 0 0;
+	-webkit-transition: top .2s ease-in-out;
 }
 
-.leaderboard .trivia-team.loading {
+
+
+
+/*.leaderboard .trivia-team.loading {
 	-webkit-animation: none;
 	-webkit-transform: perspective(1600) rotate3d(0, 1, 0, -90deg);
 }
@@ -71,39 +88,30 @@
 
 .leaderboard .trivia-team:first-child {
 	font-size: 16px;
-}
+}*/
 
 @-webkit-keyframes flipin {
 	0% {
-		-webkit-transform: perspective(1600) rotate3d(0, 1, 0, -90deg);
+		-webkit-transform: perspective(1600) rotate3d(1, 0, 0, -90deg);
 	}
 
 	50%  {
-		-webkit-transform: perspective(1600) rotate3d(0, 1, 0, 15deg);
+		-webkit-transform: perspective(1600) rotate3d(1, 0, 0, 15deg);
 	}
 
 	70%  {
-		-webkit-transform: perspective(1600) rotate3d(0, 1, 0, -15deg);
+		-webkit-transform: perspective(1600) rotate3d(1, 0, 0, -15deg);
 	}
 
 	80%  {
-		-webkit-transform: perspective(1600) rotate3d(0, 1, 0, 10deg);
+		-webkit-transform: perspective(1600) rotate3d(1, 0, 0, 10deg);
 	}
 
 	80%  {
-		-webkit-transform: perspective(1600) rotate3d(0, 1, 0, -5deg);
+		-webkit-transform: perspective(1600) rotate3d(1, 0, 0, -5deg);
 	}
 
 	100% {
 		-webkit-transform: perspective(1600) rotate3d(0, 0, 0, 0deg);
-	}
-}
-
-@-webkit-keyframes flipout {
-	0% {
-		-webkit-transform: perspective(1600) rotate3d(0, 0, 0, 0deg);
-	}
-	100% {
-		-webkit-transform: perspective(1600) rotate3d(0, 1, 0, 90deg);
 	}
 }

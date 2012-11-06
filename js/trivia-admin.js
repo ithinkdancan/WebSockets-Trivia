@@ -5,10 +5,6 @@ Trivia.TeamModel = Backbone.Model.extend({
 		name: '',
 		answers: [],
 		correctAnswers: 0
-	},
-
-	initialize: function (config) {
-		
 	}
 
 });
@@ -58,6 +54,8 @@ Trivia.Leaderboard = Backbone.View.extend({
 
 		this.teamTemplate = Handlebars.compile($('#trivia-team-template').html());
 
+		this.yPos = 0;
+
 		//create new collection of teams
 		this.teamlist = new Trivia.TeamList;
 
@@ -86,16 +84,25 @@ Trivia.Leaderboard = Backbone.View.extend({
 
 	},
 
-	addOneTeam: function (data) {
+	createTeam: function (data){
 
 		var team = $(this.teamTemplate(data.toJSON()));
-			team.attr('id', data.cid)
+		team.attr('id', data.cid)
+		team.css('top',this.yPos);
 		
-		this.$el.append(team)
+		return team;
 
-		setTimeout($.proxy(function(){
-			this.removeClass('loading')
-		},team), 0 /*100 + (500*this.teamlist.length)*/)
+	},
+
+	addOneTeam: function (data) {
+
+		var team = this.createTeam(data);
+
+		this.$el.append(team);
+		this.yPos += team.outerHeight();
+
+		team.removeClass('loading');
+		 this.removeWaiter();
 
 	},
 
@@ -109,66 +116,26 @@ Trivia.Leaderboard = Backbone.View.extend({
 		this.teamlist.add(data, {silent: false});
 	},
 
-	repaintTimeout: false,
-
-	removeTeams: function () {
-
-		var that = this, i = 0;
-
-		this.$el.find('.trivia-team').each(function(){
-			setTimeout(
-				$.proxy(function(){ $(this).addClass('destroy'); }, this)
-				,250*i++
-			);
-
-			if(that.repaintTimeout) clearTimeout(that.repaintTimeout);
-			that.repaintTimeout = setTimeout($.proxy(that.repaintTeams, that),1000+(250*(i-1))); 
-		})
-
-		if(!that.repaintTimeout){
-			this.repaintTeams();
-		}
-
-	},
-
 	repaintTeams: function () {
 
-		this.$el.html('');
-		var i = 0;
+		this.yPos = 0;
+		var teamEl;
 
 		this.teamlist.each($.proxy(function(team){
-			setTimeout( $.proxy(function(){this.addOneTeam(team)}, this), 250*i);
-			i++;
-		},this));
-
-	},
-
-	resetTeams: function (){
-
-		this.removeTeams();
-
-		// console.log('repaintTeams')
-		// var that = this;
-		// var i = 0;
-
-		// this.$el.find('.trivia-team').each(function(){
-		// 	setTimeout(
-		// 		$.proxy(function(){ 
-		// 			$(this).addClass('destroy'); 
-		// 		}, this)
-		// 	,250*i++);
-		// })
-
-		// setTimeout(function(){
-		// 	that.$el.html('');
-		// 	that.teamlist.each(function(team){ 
-		// 		that.addOneTeam(team)
-		// 	});
-		// }, 1000*(i-1));
+			teamEl = $('#' + team.cid);
+			if(teamEl[0]){
+				teamEl.html(this.createTeam(team).html())
+				teamEl.css('top',this.yPos);
+				this.yPos += teamEl.outerHeight();
+			} else {
+				this.addOneTeam(team)
+			}
+		},this))
 
 	},
 
 	updateTeams: function (data) {
+		
 		console.log('updateTeams', data);
 
 		for(o in data){
@@ -176,22 +143,12 @@ Trivia.Leaderboard = Backbone.View.extend({
 			if(team){
 				team.set(data[o]);
 			} else {
-				this.teamlist.add(data[o], {silent: true});
+				this.teamlist.add(data[o],{silent:true});
 			}
 		}
 
 		this.teamlist.sort();
-
-		this.resetTeams();
-
-		// //hide old
-		// this.$el.html('');
-
-		// this.teamlist.sort().each(function(team){ 
-		// 	that.addOneTeam(team)
-		// });
-
-		// console.log('repaintTeams', this.teamlist);
+		this.repaintTeams();
 
 	}
 
@@ -224,6 +181,8 @@ Trivia.Admin = Trivia.App.extend({
 	
 	//do nothing when an answer is selected
 	selectAnswer : function () {},
+
+	register : function () {},
 
 	nextQuestion: function () {
 		console.log('nextQuestion');

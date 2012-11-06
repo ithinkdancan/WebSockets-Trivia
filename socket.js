@@ -10,6 +10,8 @@ var currentQuestion = false;
 
 var questionActive = false;
 
+var secKey = 'qwerty';
+
 var teams = {};
 
 var questions = [
@@ -146,6 +148,7 @@ broadcastGameOver = function () {
 broadcastQuestionResults = function () {
 
 	questionActive = false;
+	console.log('question inactive broadcast')
 
 	if(questions[currentQuestion]){
 
@@ -230,7 +233,7 @@ broadcastTeam = function (team, socket){
 
 //Send a question to all clients or a single socket
 broadcastQuestion = function (id, socket){
-	
+	console.log('broadcastQuestion', questionActive)
 	if(questionActive){
 		var question = questions[currentQuestion];
 
@@ -276,6 +279,12 @@ handleClient = function (data) {
 //handles admin actions
 handleAdmin = function(data) {
 
+	if(data.key !== secKey){
+		console.log('Bad Admin!');
+		console.log(data)
+		return;
+	}
+
 	switch (data.action) {
 		case 'next': 
 			nextQuestion.call(this, data); 
@@ -287,9 +296,13 @@ handleAdmin = function(data) {
 			currentQuestion = false;
 			questionActive = false;
 			break;
+		case 'register':
+			broadcastQuestion.call(this, currentQuestion, this);
+			break;
 		default: 
 			console.log('Unknown Admin Action')
-			console.log(data)
+			console.log(data);
+			break;
 	}
 
 }
@@ -297,9 +310,10 @@ handleAdmin = function(data) {
 
 //Create Socket Listeners
 io.sockets.on('connection', function (socket) {
+  
   socket.on('client', handleClient);
   socket.on('admin', handleAdmin);	
-
+  console.log('doing it!')
   broadcastQuestion(currentQuestion, socket);
   broadcastTeams(socket)
 

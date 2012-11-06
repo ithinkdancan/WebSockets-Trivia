@@ -59,7 +59,10 @@
 			var authForm = $(templateHtml({key: this.key}));
 
 			//Attach submit listener
-			authForm.bind('submit', $.proxy(this.submitTeam, this));
+			authForm.on('submit', $.proxy(this.submitTeam, this));
+			authForm.find('[name="'+this.key+'"]').on('keyup', function(){
+				this.value = this.value.replace(/[^a-zA-Z0-9\s]/g,'');
+			});
 			
 			//append to body
 			$('#trivia-app').html(authForm);

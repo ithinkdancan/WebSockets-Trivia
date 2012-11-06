@@ -4,11 +4,13 @@ Trivia.App = Backbone.View.extend({
 
 	application: 'client',
 
+	el : $('#trivia-app'),
+
 	clickEvent: !!('ontouchstart' in window) ? 'touchstart' : 'click',
 
-	context:  window.webkitAudioContext ? new webkitAudioContext() : false,
-
 	initialize: function(config) { 
+
+		this.context = window.webkitAudioContext ? new webkitAudioContext() : false;
 		
 		this.socket = socket = io.connect('ws://' + window.location.host);
 		this.model = new Trivia.QuestionModel({
@@ -19,8 +21,6 @@ Trivia.App = Backbone.View.extend({
 		this.questionTemplate = Handlebars.compile($('#trivia-question-template').html());
 		this.answerTemplate = Handlebars.compile($('#trivia-answer-template').html());
 
-		this.setElement($('#trivia-app'));
-
 		//event listeners
 		this.attachListeners();
 
@@ -30,6 +30,8 @@ Trivia.App = Backbone.View.extend({
 		//load audio files
 		this.loadAudioFile('sounds/Buzzer2.mp3','failSound');
 		this.loadAudioFile('sounds/Cheering.mp3','successSound');
+		this.loadAudioFile('sounds/blip_click.wav','selectionSound');
+
 	},
 
 	attachListeners: function () {
@@ -52,11 +54,15 @@ Trivia.App = Backbone.View.extend({
 		var questionText = this.questionTemplate(question);
 		this.$el.html(questionText)
 
+		var previousAnswer = this.model.get('answers')[question.id];
+
 		for (var i = 0; i < answers.length; i++) {
 			
 			answerText = $(this.answerTemplate(answers[i]));
 
 			answerText.on(this.clickEvent, $.proxy(this.selectAnswer, this, {question: question.id, answer: i}))
+
+			if(i === previousAnswer){ answerText.addClass('selected'); }
 
 			this.$el.append(answerText)
 
@@ -65,8 +71,6 @@ Trivia.App = Backbone.View.extend({
 			},answerText) , 100 + (100*i))
 
 		}
-
-		//$('.loading').removeClass('loading')
 
 	},
 
@@ -87,10 +91,10 @@ Trivia.App = Backbone.View.extend({
 		var userAnswer = this.model.get('answers')[data.id];
 
 		if(userAnswer !== data.correctAnswer || userAnswer == undefined){
-			$('#trivia-result').html('WRONG!');
+			$('#trivia-result').removeClass('correct').addClass('incorrect');
 			this.playSound(this.failSound);
 		} else {
-			$('#trivia-result').html('CORRECT!');
+			$('#trivia-result').removeClass('incorrect').addClass('correct');
 			this.playSound(this.successSound);
 		}
 
@@ -105,6 +109,8 @@ Trivia.App = Backbone.View.extend({
 		targ.siblings('.selected').removeClass('selected');
 		targ.addClass('selected');
 
+		this.playSound(this.selectionSound);
+
 		this.model.setAnswer(data.question,data.answer)
 
 	},
@@ -116,25 +122,28 @@ Trivia.App = Backbone.View.extend({
 
 	},
 	
-	playSound: function (buffer) {
+	playSound: function (buffer, gain) {
 
-		if(buffer){
+		if(buffer && this.context){
 			context = this.context;
 
-		    var source = context.createBufferSource();
 
+		    var source = context.createBufferSource();
 		        source.buffer = buffer;
 		        source.connect(context.destination);
 		        source.noteOn(0); // Play sound immediately
+		        console.log('sound played i think')
 		} else {
 			console.log('no sound buffer')
 		}
 
 	},
 
+
 	loadAudioFile: function (url, bufferStr) {
 
 		if(!this.context){
+			console.log('no context');
 			return;
 		}
 		
@@ -149,7 +158,11 @@ Trivia.App = Backbone.View.extend({
 			context.decodeAudioData(
 				request.response,
 				function(incomingBuffer) {
+					console.log('incomingBuffer ' + bufferStr, incomingBuffer)
 					that[bufferStr] = incomingBuffer; // Not declared yet
+				},
+				function(){
+					console.log(arguments)
 				}
 			)
 		};

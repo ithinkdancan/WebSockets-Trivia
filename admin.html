@@ -4,6 +4,7 @@
 		<title>Trivia</title>
 		<link rel="stylesheet" href="/css/client.css" />
 		<link rel="stylesheet" href="/css/admin.css" />
+		<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
 
@@ -42,10 +43,12 @@
 		<script type="text/x-template" id="trivia-auth-template">
 
 		    <form class="authenticate" onsubmit="return false">
-		    	<div class="trivia-question">
+		    	<div class="trivia-question trivia-login">
 		    	<label>Enter Password</label>
-		    	<input type="text" name="{{key}}" />
-		    	<input type="submit" />
+		    	<div>
+		    		<input type="password" name="{{key}}" />
+		    	</div>
+		    	<input type="submit" value="Submit" />
 		    	</div>
 		    </form>
 

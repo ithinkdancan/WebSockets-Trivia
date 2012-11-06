@@ -24,7 +24,7 @@ Trivia.QuestionModel = Backbone.Model.extend({
 		//send the server the answer
 		socket.emit('client', { 
 			action: 'answer', 
-			team: this.get('team'),
+			r: this.get('team'),
 			question: question,
 			answer: answer
 		});
@@ -32,6 +32,7 @@ Trivia.QuestionModel = Backbone.Model.extend({
 	},
 
 	updateQuestion : function (data){
+		console.log('updateQuestion')
 		this.set('question', data);
 	}
 
