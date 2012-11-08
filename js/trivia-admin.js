@@ -121,6 +121,8 @@ Trivia.Leaderboard = Backbone.View.extend({
 		this.yPos = 0;
 		var teamEl;
 
+		$('.answered').removeClass('answered');
+
 		this.teamlist.each($.proxy(function(team){
 			teamEl = $('#' + team.cid);
 			if(teamEl[0]){

@@ -62,10 +62,15 @@
 .leaderboard  .trivia-team-score {
 	float: right;
 	font-size: 20px;
+	color: #FFF;
 	background: rgba(0,0,0,.9);
 	border-radius: 7px;
-	padding: 5px 10px;
+	padding: 7px 10px 3px 10px;
 	margin: -5px 0 -5px 0;
+}
+
+.leaderboard .trivia-team.answered {
+	color: #13A89E;
 }
 
 

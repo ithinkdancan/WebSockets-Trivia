@@ -16,6 +16,7 @@ header {
 	background: #13A89E;
 	color: #FFF;
 	text-shadow: 0 -1px rgba(0,0,0,.5);
+	-webkit-user-select: none;
 }
 
 
@@ -59,6 +60,7 @@ header h1 {
 	font-weight: normal;
 	position: relative;
 	z-index: 2;
+	-webkit-user-select: none;
 
 }
 
@@ -72,6 +74,7 @@ header h1 {
 	box-shadow: inset 1px 1px 1px rgba(255,255,255,.1),
 				inset -1px -1px 1px rgba(0,0,0,.1);
 	border-radius: 7px;
+	-webkit-user-select: none;
 	-webkit-transform: translate3d(0,0,0);
 	-webkit-transition: -webkit-transform .1s linear;
 }
@@ -117,7 +120,7 @@ header h1 {
 	width: 100%; 
 	height: 100%;
 	background: #000; 
-	background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0) 0%,rgba(0,0,0,1) 100%); 
+	background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,.5) 0%,rgba(0,0,0,1) 100%); 
 	text-align: center;
 	z-index: 3;
 }
@@ -125,6 +128,12 @@ header h1 {
 #trivia-result.correct {
 	background: #000 url(/css/correct.png) center center no-repeat;
 	background: url(/css/correct.png) center center no-repeat,
+	            -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,.5) 0%,rgba(0,0,0,1) 100%);
+}
+
+#trivia-result.incorrect {
+	background: #000 url(/css/incorrect.png) center center no-repeat;
+	background: url(/css/incorrect.png) center center no-repeat,
 	            -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,.5) 0%,rgba(0,0,0,1) 100%);
 }
 

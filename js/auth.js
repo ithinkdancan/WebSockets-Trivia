@@ -30,8 +30,8 @@
 		save: function (team) {
 
 			localStorage.setItem(this.key,team);
-			this.authCallback(team);
 			$('#trivia-app').html('');
+			this.authCallback(team);
 
 		},
 

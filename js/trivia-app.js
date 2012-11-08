@@ -6,7 +6,7 @@ Trivia.App = Backbone.View.extend({
 
 	el : $('#trivia-app'),
 
-	clickEvent: !!('ontouchstart' in window) ? 'touchstart' : 'click',
+	clickEvent: !!('ontouchend' in window) ? 'touchend' : 'click',
 
 	initialize: function(config) { 
 
@@ -32,6 +32,8 @@ Trivia.App = Backbone.View.extend({
 		this.loadAudioFile('sounds/Cheering.mp3','successSound');
 		this.loadAudioFile('sounds/blip_click.wav','selectionSound');
 
+		this.setDefaultContent();
+
 	},
 
 	attachListeners: function () {
@@ -45,8 +47,15 @@ Trivia.App = Backbone.View.extend({
 
 	},
 
+	setDefaultContent: function () {
+
+		var questionText = this.questionTemplate({text:'Get Ready!'});
+		this.$el.html(questionText)
+
+	},
+
 	render: function (data) {
-		
+		console.log('render')
 		var question = this.model.get('question');
 		var answers = question.answers;
 		var answerText;
