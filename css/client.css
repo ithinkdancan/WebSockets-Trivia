@@ -137,3 +137,9 @@ header h1 {
 	            -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,.5) 0%,rgba(0,0,0,1) 100%);
 }
 
+#trivia-result.gameOver {
+	background: #000 url(/css/gameover.png) center center no-repeat;
+	background: url(/css/gameover.png) center center no-repeat,
+	            -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,.5) 0%,rgba(0,0,0,1) 100%);
+}
+

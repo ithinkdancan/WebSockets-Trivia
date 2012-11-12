@@ -40,6 +40,7 @@ Trivia.App = Backbone.View.extend({
 
 		//subscribe to socket events
 		this.socket.on('results', $.proxy(this.renderResult, this));
+		this.socket.on('gameOver', $.proxy(this.gameOver, this));
 
 		//subscribe to model changes
 		this.model.on('change:question', this.hideResult, this);
@@ -83,16 +84,18 @@ Trivia.App = Backbone.View.extend({
 
 	},
 
+	gameOver: function () {
+		this.$el.html('');
+		$('#trivia-result').removeClass('correct').removeClass('incorrect').addClass('gameOver');
+		this.showResult();
+	},
+
 	hideResult : function () {
-
 	  $('#trivia-result').addClass('hidden');
-
 	},
 
 	showResult : function () {
-
 	  $('#trivia-result').removeClass('hidden');
-
 	},
 
 	renderResult: function (data) {

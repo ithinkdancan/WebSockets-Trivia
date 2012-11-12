@@ -62,6 +62,7 @@ Trivia.Leaderboard = Backbone.View.extend({
 		this.socket.on('teamList', $.proxy(this.updateTeams, this));
 		this.socket.on('newClient', $.proxy(this.addTeam, this));
 		this.socket.on('numresponses', $.proxy(this.updateResponders, this));
+		this.socket.on('gameOver', $.proxy(this.gameOver, this));
 		this.teamlist.on('add', this.addOneTeam, this)
 		this.teamlist.on('add', this.removeWaiter, this)
 
@@ -81,6 +82,12 @@ Trivia.Leaderboard = Backbone.View.extend({
 			}
 		};
 
+
+	},
+
+	gameOver: function () {
+
+		this.$el.addClass('game-over');
 
 	},
 
@@ -187,18 +194,20 @@ Trivia.Admin = Trivia.App.extend({
 	register : function () {},
 
 	nextQuestion: function () {
-		console.log('nextQuestion');
 		this.socket.emit('admin', { action: 'next', key: this.key});
 	},
 
 	resetApp: function () {
-		console.log('resetApp')
 		this.socket.emit('admin', { action: 'reset', key: this.key });
 	},
 
 	showAnswer: function () {
-		console.log('showAnswer');
 		socket.emit('admin', { action: 'end', key: this.key });
+	},
+
+	setDefaultContent: function () {
+		var questionText = this.questionTemplate({text:'http://bit.ly/webdevtrivia'});
+		this.$el.html(questionText)
 	},
 
 	handleKeyPress: function (event) {
@@ -232,11 +241,18 @@ Trivia.Admin = Trivia.App.extend({
 
 	},
 
+	gameOver: function () {
+
+		var questionText = this.questionTemplate({text: 'Game Over!'});
+		this.$el.html(questionText)
+
+	},
+
 	attachListeners: function () {
 
 		//subscribe to socket events
-		//this.socket.on('results', $.proxy(this.renderResult, this));
 		this.socket.on('results',$.proxy(this.renderResult, this));
+		this.socket.on('gameOver', $.proxy(this.gameOver, this));
 
 		//subscribe to model changes
 		this.model.on('change:question', this.render, this);
