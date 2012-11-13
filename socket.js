@@ -16,7 +16,7 @@ var teams = {};
 
 var questions = [
 	{
-		'text' : 'Who is the father of javascript?',
+		'text' : 'Who is the creator of Javascript?',
 		'answers' :  [
 			{ text: 'Douglas Crockford'},
 			{ text: 'Brendan Eich'},
@@ -261,7 +261,6 @@ registerClient = function (data){
 	if(!teams[data.team]){
 
 		console.log('registering a client: ' + data.team)
-		console.log(data)
 		teams[data.team] = {
 			name: data.team,
 			answers: [],
@@ -314,7 +313,7 @@ nextQuestion = function () {
     	broadcastTeams();
     } else {
     	broadcastGameOver();
-    	console.log(teams)
+    	console.log(teams);
     }
 
    
@@ -480,6 +479,7 @@ handleAdmin = function(data) {
 		case 'reset':
 			currentQuestion = false;
 			questionActive = false;
+			teams = {};
 			break;
 		case 'register':
 			broadcastQuestion.call(this, currentQuestion, this);
@@ -498,7 +498,7 @@ io.sockets.on('connection', function (socket) {
   
   socket.on('client', handleClient);
   socket.on('admin', handleAdmin);	
-  console.log('doing it!')
+
   broadcastQuestion(currentQuestion, socket);
   broadcastTeams(socket)
 
