@@ -1,0 +1,27 @@
+{
+  "name": "WebSockets-Trivia",
+  "version": "1.0.0",
+  "description": "Web Socket Trivia",
+  "main": "socket.js",
+  "dependencies": {
+    "express": "~3.0.6",
+    "socket.io": "~0.9.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ithinkdancan/WebSockets-Trivia.git"
+  },
+  "keywords": [
+    "trivia",
+    "socket"
+  ],
+  "author": "Daniel Tijerina <ithinkdancan@gmail.com> (http://wrathofdaniel.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ithinkdancan/WebSockets-Trivia/issues"
+  },
+  "homepage": "https://github.com/ithinkdancan/WebSockets-Trivia"
+}
