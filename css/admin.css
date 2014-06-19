@@ -59,9 +59,9 @@
 	-webkit-transition: top .2s ease-in-out;
 }
 
-.game-over .trivia-team:nth-child(n+4) {
+/*.game-over .trivia-team:nth-child(n+4) {
 	opacity: .3;
-}
+}*/
 
 .leaderboard  .trivia-team-score {
 	float: right;
