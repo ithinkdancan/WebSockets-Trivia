@@ -206,7 +206,7 @@ Trivia.Admin = Trivia.App.extend({
 	},
 
 	setDefaultContent: function () {
-		var questionText = this.questionTemplate({text:'http://bit.ly/webdevtrivia'});
+		var questionText = this.questionTemplate({text:'http://bit.ly/sbxtrivia'});
 		this.$el.html(questionText)
 	},
 

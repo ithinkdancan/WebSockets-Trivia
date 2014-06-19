@@ -1,222 +1,76 @@
 [
 	{
-		"text" : "Who is the creator of Javascript?",
+		"text" : "How many total cans did we collect for the food drive?",
 		"answers" :  [
-			{ "text": "Douglas Crockford"},
-			{ "text": "Brendan Eich"},
-			{ "text": "Marijn Haverbeke"},
-			{ "text": "John Resig"}
+			{ "text": "314"},
+			{ "text": "276"},
+			{ "text": "188"},
+			{ "text": "206"}
 		],
 		"correct" : 1
-	},{
-		"text" : "Which of the following is NOT a MVC Framework?",
+	},
+	{
+		"text" : "What team scored the highest number of points?",
 		"answers" :  [
-			{ "text": "Angular"},
-			{ "text": "Backbone"},
-			{ "text": "Batman"},
-			{ "text": "Structs"}
+			{ "text": "Shaft Shank Redemption"},
+			{ "text": "Hipster Heros"},
+			{ "text": "Big Hero 6"},
+			{ "text": "The Whiskey 6"}
 		],
-		"correct" : 3 
+		"correct" : 0
 	},{
-		"text" : "How do you create a new YUI3 sandbox?",
+		"text" : "What team scored the lowest amount of points?",
 		"answers" :  [
-			{ "text": "Y.use(...)"},
-			{ "text": "YUI().use(...)"},
-			{ "text": "YUI.use(...)"},
-			{ "text": "Y().use(...)"}
-		],
-		"correct" : 1
-	},{
-		"text" : "What does CSS stand for?",
-		"answers" : [
-			{ "text": "Creative Style Sheets"},
-			{ "text": "Computer Style Sheets"},
-			{ "text": "Cascading Style Sheets"},
-			{ "text": "Colorful Style Sheets"}
+			{ "text": "The Hourlies"},
+			{ "text": "Big Hero 6"},
+			{ "text": "The Whiskey 6"},
+			{ "text": "The Nanananananananas"}
 		],
 		"correct" : 2 
 	},{
-		"text" : "Which of the following is NOT a reserved word in Javascript?",
-		"answers" : [
-			{ "text": "break"},
-			{ "text": "finally"},
-			{ "text": "small"},
-			{ "text": "package"}
+		"text" : "In the spirit of the game Head’s Up, complete this phrase: assless ______",
+		"answers" :  [
+			{ "text": "pants"},
+			{ "text": "chaps"},
+			{ "text": "snaps"},
+			{ "text": "rants"}
 		],
-		"correct" : 2 
+		"correct" : 1
 	},{
-		"text" : "Which of the following is NOT a valid CSS 'display' property",
+		"text" : "What team allegedly has a home brewer of moonshine in their midst.",
 		"answers" : [
-			{ "text": "none"},
-			{ "text": "block"},
-			{ "text": "inline"},
-			{ "text": "hidden"},
-			{ "text": "run-in"}
+			{ "text": "Shaft Shank Redemption"},
+			{ "text": "The Nanananananananananananananananas"},
+			{ "text": "Teenage Mutant Ninja Pixels"},
+			{ "text": "The Whiskey 6"}
 		],
 		"correct" : 3 
 	},{
-		"text" : "In which year is the HTML specification supposed to be complete and finalized?",
+		"text" : "Who was benefitting from our collection of canned goods?",
 		"answers" : [
-			{ "text": "2022"},
-			{ "text": "2015"},
-			{ "text": "2019"},
-			{ "text": "2013"}
+			{ "text": "Ample Harvest"},
+			{ "text": "East Texas Food Bank"},
+			{ "text": "Hanna Barr"},
+			{ "text": "Capital Area Food Bank"}
+		],
+		"correct" : 3 
+	},{
+		"text" : "What was Iftekhar’s outfit?",
+		"answers" : [
+			{ "text": "Raggedy Rasta Ann"},
+			{ "text": "Octopus Head"},
+			{ "text": "Spiderman"},
+			{ "text": "The love child of Carrot Top and Bob Marley"}
+		],
+		"correct" : 2 
+	},{
+		"text" : "Which team did completely not dress up minus one plastic figurine?",
+		"answers" : [
+			{ "text": "Big Hero 6"},
+			{ "text": "Captain Planet and the Pixelteers"},
+			{ "text": "Hipster Heros"},
+			{ "text": "The Hourlies"}
 		],
 		"correct" : 0
-	},{
-		"text" : "Which of the following conditions evaluates to True?",
-		"answers" : [
-			{ "text": "NaN === NaN"},
-			{ "text": "0.1 + 0.2 == 0.3"},
-			{ "text": "\"string\" instanceof String"},
-			{ "text": "typeof NaN === \"number\""}
-		],
-		"correct" : 3
-	},{
-		"text" : "What javascript method returns which character occurs at the 5th position in a string?",
-		"answers" : [
-			{ "text": "Substring()"},
-			{ "text": "String()"},
-			{ "text": "Stringlength()"},
-			{ "text": "CharAt()"}
-		],
-		"correct" : 3
-	},{
-		"text" : "Which of these declarations will result in a box whose bottom right corner has a radius of 20px?",
-		"answers" : [
-			{ "text": "border-radius: 40px 20px;"},
-			{ "text": "border-radius: 40px 20px 20px 80px;"},
-			{ "text": "border-radius: 20px 20px 40px 20px;"},
-			{ "text": "border-radius: 20px 40px 60px 80px;"}
-		],
-		"correct" : 1
-	},{
-		"text" : "Which of the following conditions does not evaluate to False?",
-		"answers" : [
-			{ "text": "0"},
-			{ "text": "''"},
-			{ "text": "Nan"},
-			{ "text": "undefined"},
-			{ "text": "new Boolean(false)"}
-		],
-		"correct" : 4
-	},{
-		"text" : "Which of the following methods & properties does not cause a DOM reflow?",
-		"answers" : [
-			{ "text": "offsetHeight"},
-			{ "text": "scrollTop"},
-			{ "text": "innerText"},
-			{ "text": "createDocumentFragment"}
-		],
-		"correct" : 3
-	},{
-		"text" : "Which of the following events fire first on a touch device?",
-		"answers" : [
-			{ "text": "touchdown"},
-			{ "text": "touchstart"},
-			{ "text": "touchmove"},
-			{ "text": "touchbegin"}
-		],
-		"correct" : 1
-	},{
-		"text" : "What is the maximum number of CSS files that you can include on a single page in Internet Explorer?",
-		"answers" : [
-			{ "text": "16"},
-			{ "text": "32"},
-			{ "text": "100"},
-			{ "text": "no limit"}
-		],
-		"correct" : 1
-	},{
-		"text" : "How many performance rules are evaluated in the Yslow tool?",
-		"answers" : [
-			{ "text": "12"},
-			{ "text": "18"},
-			{ "text": "23"},
-			{ "text": "32"}
-		],
-		"correct" : 2
-	},{
-		"text" : "Which CSS selector has the highest specificity?",
-		"answers" : [
-			{ "text": "#section input"},
-			{ "text": ".section input"},
-			{ "text": ".section .input"},
-			{ "text": "#section #input"}
-		],
-		"correct" : 3
-	},{
-		"text" : "What does the third value in the declaration specify in the declaration \"box-shadow: 5px 5px 5px #888;\"? ",
-		"answers" : [
-			{ "text": "X Offset"},
-			{ "text": "Y Offset"},
-			{ "text": "Blur Radius"},
-			{ "text": "Margin"}
-		],
-		"correct" : 2
-	},{
-		"text" : "How do you loop through the properites of an object?",
-		"answers" : [
-			{ "text": "for(o in object){ }"},
-			{ "text": "for(i=0;i<o.length;i++){ }"},
-			{ "text": "foreach(o in object){ }"},
-			{ "text": "while(o in object){ }"}
-		],
-		"correct" : 0
-	},{
-		"text" : "Which of these is NOT a templating framework?",
-		"answers" : [
-			{ "text": "Handlebars"},
-			{ "text": "Mustache"},
-			{ "text": "Jade"},
-			{ "text": "Curlies"}
-		],
-		"correct" : 3
-	},{
-		"text" : "Who coined the term AJAX?",
-		"answers" : [
-			{ "text": "Chris Ullman"},
-			{ "text": "John Resig"},
-			{ "text": "Douglas Crockford"},
-			{ "text": "Jesse James Garrett"}
-		],
-		"correct" : 3
-	},{
-		"text" : "Which of the following Javascript Engines does FireFox use?",
-		"answers" : [
-			{ "text": "V8"},
-			{ "text": "Spider Monkey"},
-			{ "text": "SquirrelFish"},
-			{ "text": "Chakra"}
-		],
-		"correct" : 1
-	},{
-		"text" : "Which of the following Components is not part of YUI3 App Framework?",
-		"answers" : [
-			{ "text": "Model"},
-			{ "text": "App"},
-			{ "text": "Model List"},
-			{ "text": "Controller"},
-			{ "text": "View"}
-		],
-		"correct" : 3
-	},{
-		"text" : "What type of variable scoping does javascript implement",
-		"answers" : [
-			{ "text": "Functional"},
-			{ "text": "Block"},
-			{ "text": "Class"},
-			{ "text": "None of the above"}
-		],
-		"correct" : 0
-	},{
-		"text" : "Who coined the term JSON?",
-		"answers" : [
-			{ "text": "Chris Ullman"},
-			{ "text": "John Resig"},
-			{ "text": "Douglas Crockford"},
-			{ "text": "Jesse James Garrett"}
-		],
-		"correct" : 2
 	}
 ]
