@@ -72,5 +72,26 @@
 			{ "text": "The Hourlies"}
 		],
 		"correct" : 0
+	},{
+		"text" : "Which sports team was on Joshs' Hipster scarf?",
+		"answers" : [
+			{ "text": "Bayern Munich"},
+			{ "text": "Prussia Münster"},
+			{ "text": "Manchester United"},
+			{ "text": "Werder Bremen"}
+		],
+		"correct" : 0
+	},{
+		"text" : "How many bays does Top Golf have?",
+		"answers" : [
+			{ "text": "99"},
+			{ "text": "300"},
+			{ "text": "102"},
+			{ "text": "405"}
+		],
+		"correct" : 2
 	}
+
+
+
 ]
