@@ -28,12 +28,12 @@
 		],
 		"correct" : 2 
 	},{
-		"text" : "In the spirit of the game Head’s Up, complete this phrase: assless ______",
+		"text" : "In the spirit of the game Head’s Up, complete this phrase: ______ chaps",
 		"answers" :  [
-			{ "text": "pants"},
-			{ "text": "chaps"},
-			{ "text": "snaps"},
-			{ "text": "rants"}
+			{ "text": "leather"},
+			{ "text": "assless"},
+			{ "text": "cowboy"},
+			{ "text": "sexy"}
 		],
 		"correct" : 1
 	},{
