@@ -143,7 +143,7 @@ Trivia.App = Backbone.View.extend({
 		    var source = context.createBufferSource();
 		        source.buffer = buffer;
 		        source.connect(context.destination);
-		        source.noteOn(0); // Play sound immediately
+		        source.start(0); // Play sound immediately
 		        console.log('sound played i think')
 		} else {
 			console.log('no sound buffer')
